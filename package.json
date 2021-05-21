@@ -5,7 +5,7 @@
   "homepage": "https://nexss.com",
   "main": "src/language.js",
   "bin": {
-    "nexssp-language": "bin/nexssp-language.js"
+    "nexssp-languages": "bin/nexssp-languages.js"
   },
   "files": [
     "src/**/*",

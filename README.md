@@ -6,6 +6,24 @@ Programming Languages database, templates, info..
 
 This Nexss Programmer's plugin is the effect of the refactoring the Nexss Programmer **@nexssp/cli** which development has been started in 2018. This module can be used also _separately_ without the Nexss Programmer.
 
+## Commands
+
+```sh
+nexssp-languages list
+```
+
+### Example: nexssp-languages installed
+
+Over 50 programming languages to choose.
+
+![image](https://user-images.githubusercontent.com/53263666/119171081-63df3300-ba64-11eb-941c-4eda7f428b3c.png)
+
+### Example: nexssp-languages list
+
+List of supported languages
+
+![image](https://user-images.githubusercontent.com/53263666/119171287-a7d23800-ba64-11eb-9ce5-6c590fe1d47f.png)
+
 ## Repositories
 
 @nexssp/language usege external repositories for all languages. List of them is located in the `src/nexssp-languages-repos.json` file.
