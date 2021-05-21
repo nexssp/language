@@ -2,6 +2,10 @@
 
 Programming Languages database, templates, info..
 
+## Note
+
+This module is an effect of the refactoring the Nexss Programmer **@nexssp/cli** which development has been started in 2018. This module can be used also _separately_ without the Nexss Programmer.
+
 ## Repositories
 
 @nexssp/language usege external repositories for all languages. List of them is located in the `src/nexssp-languages-repos.json` file.
