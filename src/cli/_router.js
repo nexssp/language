@@ -3,8 +3,9 @@
 // btw we already checked if the command exists
 
 module.exports = (cmd, args, languageExtension, { through }) => {
-  const commandsPath = ``
-
+  if (!cmd) {
+    cmd = process.argv[2]
+  }
   // We check if language is by extension
   const { language1 } = require('./config/language')
   // isImplementedExtension contains . as
@@ -24,6 +25,20 @@ module.exports = (cmd, args, languageExtension, { through }) => {
         if (!through) {
           console.log(`Command ${cmd} not found.`)
         }
+      }
+    }
+  } else {
+    const commandPath = `${__dirname}/commands/${cmd}.js`
+
+    const command = require(commandPath)
+    // As the 4th argument we pass loaded language
+
+    try {
+      return command(cmd, args, languageExtension)
+    } catch (e) {
+      // console.log(e)
+      if (!through) {
+        console.log(`Command ${cmd} not found.`)
       }
     }
   }
