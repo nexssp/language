@@ -10,6 +10,11 @@ This Nexss Programmer's plugin is the effect of the refactoring the Nexss Progra
 
 ```sh
 nexssp-languages list
+nexssp-languages [ext] install # install language from over 50 of them, see above list
+nexssp-languages installed # installed languages
+
+nexssp-languages update # update languages definition to the latest version
+nexssp-languages status # status - handy for dev of the languages
 ```
 
 ### Example: nexssp-languages installed

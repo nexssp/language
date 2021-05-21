@@ -22,7 +22,7 @@ module.exports = (cmd, args, languageExtension, { through }) => {
       } catch (e) {
         // console.log(e)
         if (!through) {
-          console.log(`Command ${command} not found.`)
+          console.log(`Command ${cmd} not found.`)
         }
       }
     }
