@@ -72,7 +72,7 @@ function nexssLanguages({ cache, cacheDuration, progress } = {}) {
     _paths.push(_path.join(NEXSS_LANGUAGES_PATH, ...languagePathGlob).replace(/\\/g, '/'))
 
     // Specific for Nexss Programmer Project
-    if (process.env.NEXSS_PROJECT_PATH) {
+    if (process.env.NEXSS_PROJECT_PATH && process.env.NEXSS_LANGUAGES_ENABLE_PROJECT_FOLDER) {
       _paths.push(
         _path
           .join(_path.resolve(process.env.NEXSS_PROJECT_PATH), ...languagePathGlob)
@@ -80,6 +80,7 @@ function nexssLanguages({ cache, cacheDuration, progress } = {}) {
       )
     }
     _started = true
+
     return _paths
   }
 
@@ -144,6 +145,8 @@ function nexssLanguages({ cache, cacheDuration, progress } = {}) {
       return process.languages
     } else {
       _log.dm('¦ making configuration for all language config.')
+      _log.dy(`/¦ if you want to use also current/project folder for searching languages config files
+please use environment variable NEXSS_LANGUAGES_ENABLE_PROJECT_FOLDER.`)
     }
 
     // Cache L2 - file
@@ -154,7 +157,9 @@ function nexssLanguages({ cache, cacheDuration, progress } = {}) {
     }
 
     const files = getLanguagesConfigFiles(_paths)
+
     setupConfigs()
+
     const configParsedContent = parseConfigs(files) || {}
 
     // Store only if there is something in the cache

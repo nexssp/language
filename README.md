@@ -52,3 +52,13 @@ selectedLanguage.getCompilerOrBuilder() // Will find compiler, if not there will
 
 selectedLanguage.config() // Gets while config
 ```
+
+## Troubleshooting
+
+### Environment variables
+
+- **NEXSS_LANGUAGES_ENABLE_PROJECT_FOLDER** - enable also search in current/project folder
+
+```js
+process.env.NEXSS_LANGUAGES_ENABLE_PROJECT_FOLDER = true
+```
