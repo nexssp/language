@@ -55,7 +55,7 @@
     "@nexssp/ansi": "^1.1.1",
     "@nexssp/cache": "^2.0.0",
     "@nexssp/const": "^1.0.13",
-    "@nexssp/ensure": "^1.0.2",
+    "@nexssp/ensure": "^1.0.3",
     "@nexssp/extend": "^1.0.21",
     "@nexssp/logdebug": "^1.0.15",
     "@nexssp/os": "^1.0.31",
