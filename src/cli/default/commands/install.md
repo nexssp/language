@@ -1,3 +1,3 @@
 # Install
 
-Just an example of install !!!!!
+Install any language with just nexss [ext] install

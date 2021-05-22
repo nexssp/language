@@ -56,7 +56,7 @@
     "@nexssp/cache": "^2.0.0",
     "@nexssp/const": "^1.0.13",
     "@nexssp/ensure": "^1.0.2",
-    "@nexssp/extend": "^1.0.16",
+    "@nexssp/extend": "^1.0.21",
     "@nexssp/logdebug": "^1.0.15",
     "@nexssp/os": "^1.0.31",
     "@nexssp/plugin": "^1.0.1",
@@ -66,7 +66,7 @@
     "minimist": "^1.2.5"
   },
   "devDependencies": {
-    "@nexssp/test": "^1.0.20",
+    "@nexssp/test": "^1.0.24",
     "prettier": "^2.3.0"
   }
 }
