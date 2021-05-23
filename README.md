@@ -1,4 +1,4 @@
-# @nexssp/languagess
+# @nexssp/language
 
 Programming Languages database, templates, info..
 
@@ -9,21 +9,21 @@ This Nexss Programmer's plugin is the effect of the refactoring the Nexss Progra
 ## Commands
 
 ```sh
-nexssp-languages list
-nexssp-languages [ext] install # install language from over 50 of them, see above list
-nexssp-languages installed # installed languages
+nexssp-language list
+nexssp-language [ext] install # install language from over 50 of them, see above list
+nexssp-language installed # installed languages
 
-nexssp-languages update # update languages definition to the latest version
-nexssp-languages status # status - handy for dev of the languages
+nexssp-language update # update languages definition to the latest version
+nexssp-language status # status - handy for dev of the languages
 ```
 
-### Example: nexssp-languages installed
+### Example: nexssp-language installed
 
 Over 50 programming languages to choose.
 
 ![image](https://user-images.githubusercontent.com/53263666/119171081-63df3300-ba64-11eb-941c-4eda7f428b3c.png)
 
-### Example: nexssp-languages list
+### Example: nexssp-language list
 
 List of supported languages
 
@@ -31,7 +31,7 @@ List of supported languages
 
 ## Repositories
 
-@nexssp/language usege external repositories for all languages. List of them is located in the `src/nexssp-languages-repos.json` file.
+@nexssp/language usege external repositories for all languages. List of them is located in the `src/nexssp-language-repos.json` file.
 
 ```js
 const languages = require('@nexssp/languages')
@@ -57,8 +57,8 @@ selectedLanguage.config() // Gets while config
 
 ### Environment variables
 
-- **NEXSS_LANGUAGES_ENABLE_PROJECT_FOLDER** - enable also search in current/project folder
+- **NEXSS_LANGUAGE_ENABLE_PROJECT_FOLDER** - enable also search in current/project folder
 
 ```js
-process.env.NEXSS_LANGUAGES_ENABLE_PROJECT_FOLDER = true
+process.env.NEXSS_LANGUAGE_ENABLE_PROJECT_FOLDER = true
 ```
