@@ -53,7 +53,7 @@ module.exports = (cmd, args, languageExtension, { through }) => {
     _log.dr(`@languages @router ??? trying to run command ????`, isImplementedExtension)
     try {
       const commandPath = `${__dirname}/commands/${cmd}.js`
-
+      _log.dr(`Trying to run command: `, commandPath)
       const command = require(commandPath)
       return command(cmd, args, languageExtension)
     } catch (e) {

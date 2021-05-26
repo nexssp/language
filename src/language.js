@@ -12,7 +12,7 @@
 if (!process.distro) {
   // We check if they are loaded.
   const { nConst } = require('@nexssp/const')
-  const os = require('@nexssp/os')
+  const os = require('@nexssp/os/legacy')
   nConst('distro', os.name(), process)
   nConst('distroVersion', os.v(), process)
   nConst('sudo', os.sudo(), process)
