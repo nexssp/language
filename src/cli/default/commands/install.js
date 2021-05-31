@@ -17,6 +17,11 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
   const { nExecTerminal, nExec } = require('@nexssp/system')
   const { remove } = require('@nexssp/extend/array')
 
+  const dry = args.includes('--dry')
+  args = remove(args, '--progress')
+  args = remove(args, '--debug')
+  args = remove(args, '--dry')
+
   if (!isEmpty(args)) {
     const pm = languageSelected.getPackageManager()
     const existCommand = pm.install || pm.version || pm.installed
@@ -28,8 +33,6 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
       return
     }
 
-    const dry = args.includes('--dry')
-
     // get command from install or version. One of them m
 
     if (pm.installation.indexOf('installed') === -1) {
@@ -37,10 +40,6 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
         progress: true /**args.includes('--progress') */,
       })
     }
-
-    args = remove(args, '--progress')
-    args = remove(args, '--debug')
-    args = remove(args, '--dry')
 
     const commandToRun = `${pm.install} ${args.join(' ')}`
     if (dry) {
