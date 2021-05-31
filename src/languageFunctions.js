@@ -1,6 +1,6 @@
 // This could be done by Proxies also.
 const { getFiles } = require('./lib/fs')
-function carryGet (par) {
+function carryGet(par) {
   return function (name, continueOnError) {
     const allKeys = Object.keys(this[par])
 
@@ -27,10 +27,11 @@ function carryGet (par) {
   }
 }
 
-function addFunctions (obj) {
+function addFunctions(obj) {
   obj.selected = {}
   obj.getCompiler = carryGet('compilers')
   obj.getBuilder = carryGet('builders')
+  obj.getPackageManager = carryGet('languagePackageManagers')
   obj.getCompilerOrBuilder = function (name) {
     // secont parameter true because we try to find builder as alternative
     return this.getCompiler(name, true) || this.getBuilder(name)
@@ -38,11 +39,9 @@ function addFunctions (obj) {
 
   obj.getTemplatesPath = function (name, customTemplatesPath) {
     const compiler = this.getCompilerOrBuilder(name)
-    const templatesFolder =
-      customTemplatesPath || compiler.templates || 'templates'
+    const templatesFolder = customTemplatesPath || compiler.templates || 'templates'
 
-    const templatesPath =
-      require('path').dirname(this.configFile) + `/${templatesFolder}`
+    const templatesPath = require('path').dirname(this.configFile) + `/${templatesFolder}`
     return templatesPath
   }
 

@@ -3,6 +3,9 @@
 // btw we already checked if the command exists
 
 module.exports = (cmd, args, languageExtension, { through }) => {
+  const getCommandPath = (cmd) => `${__dirname}/default/commands/${cmd}.js`
+
+  const _fs = require('fs')
   const _debug = args.includes('--debug')
   args = args.filter((a) => a !== '--debug')
   const _log = require('@nexssp/logdebug')
@@ -19,6 +22,7 @@ module.exports = (cmd, args, languageExtension, { through }) => {
   } catch (e) {}
   // We check if language is by extension
   const { language1 } = require('./config/language')
+  language1.start()
   // isImplementedExtension contains . as
   const isImplementedExtension = language1.isImplementedByExtension(languageExtension)
 
@@ -26,21 +30,31 @@ module.exports = (cmd, args, languageExtension, { through }) => {
     `@languages @router checking if language ${languageExtension} is implemented`,
     isImplementedExtension
   )
+
+  const defaultCommandPath = getCommandPath('default')
+  const compileCommandPath = getCommandPath('compile')
+
   if (isImplementedExtension) {
     language1.start()
-    console.log('====================================================================')
+    // console.log('====================================================================')
     const selectedLanguage = language1.byExtension(isImplementedExtension)
     _log.dg(`@languages @router selected language: `, isImplementedExtension)
     if (selectedLanguage) {
       cmd = args[0]
       args = args.slice(1)
-      const commandPath = `${__dirname}/default/commands/${cmd}.js`
-      try {
+      const commandPath = getCommandPath(cmd)
+
+      if (_fs.existsSync(commandPath)) {
+        _log.dc(`@languages @router trying run command: `, commandPath)
         const command = require(commandPath)
-        // As the 4th argument we pass loaded language
         return command(cmd, args, languageExtension, selectedLanguage)
-      } catch (e) {
-        // console.log(e)
+      } else {
+        _log.dr(`@languages '${cmd}' not found. Trying to load default..`, commandPath)
+
+        if (_fs.existsSync(defaultCommandPath)) {
+          const defaultCommand = require(defaultCommandPath)
+          return defaultCommand(cmd, args, languageExtension, selectedLanguage)
+        }
         if (!through) {
           console.error(`Command ${cmd} not found.`)
         }
@@ -49,17 +63,24 @@ module.exports = (cmd, args, languageExtension, { through }) => {
       _log.dr(`@languages @router error getting data about language: `, isImplementedExtension)
     }
   } else {
-    // As the 4th argument we pass loaded language
-    _log.dr(`@languages @router ??? trying to run command ????`, isImplementedExtension)
-    try {
-      const commandPath = `${__dirname}/commands/${cmd}.js`
-      _log.dr(`Trying to run command: `, commandPath)
-      const command = require(commandPath)
-      return command(cmd, args, languageExtension)
-    } catch (e) {
-      // console.log(e)
-      if (!through) {
-        console.log(`Command ${cmd} not found.`)
+    if ((languageSelected = language1.byFilename(languageExtension))) {
+      if (_fs.existsSync(compileCommandPath)) {
+        const compileCommand = require(compileCommandPath)
+        return compileCommand(cmd, args, languageExtension, languageSelected)
+      }
+    } else {
+      // As the 4th argument we pass loaded language
+      _log.dr(`@languages @router ??? trying to run command ????`, isImplementedExtension)
+      try {
+        const commandPath = `${__dirname}/commands/${cmd}.js`
+        _log.dr(`Trying to run command: `, commandPath)
+        const command = require(commandPath)
+        return command(cmd, args, languageExtension)
+      } catch (e) {
+        // console.log(e)
+        if (!through) {
+          console.log(`Command ${cmd} not found.`)
+        }
       }
     }
   }

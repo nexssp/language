@@ -6,10 +6,55 @@
  * @param {object} languageSelected - loaded language definition
  */
 
+const { inherits } = require('util')
+
 module.exports = (cmd, args, languageExtension, languageSelected) => {
   const _params = require('minimist')(process.argv.slice(2))
+  const { ensureInstalled } = require('@nexssp/ensure')
   const _log = require('@nexssp/logdebug')
   const { blue, bold } = require('@nexssp/ansi')
+  const { isEmpty } = require('@nexssp/data')
+  const { nExecTerminal, nExec } = require('@nexssp/system')
+  const { remove } = require('@nexssp/extend/array')
+
+  if (!isEmpty(args)) {
+    const pm = languageSelected.getPackageManager()
+    const existCommand = pm.install || pm.version || pm.installed
+    const pmCommand = existCommand.split(' ')[0]
+
+    if (!pm.install) {
+      _log.warn(`command 'install' is not defined for ${pmCommand}`)
+      console.log(`Available commands: ${Object.keys(pm)}`)
+      return
+    }
+
+    const dry = args.includes('--dry')
+
+    // get command from install or version. One of them m
+
+    if (pm.installation.indexOf('installed') === -1) {
+      ensureInstalled(pmCommand, pm.installation, {
+        progress: true /**args.includes('--progress') */,
+      })
+    }
+
+    args = remove(args, '--progress')
+    args = remove(args, '--debug')
+    args = remove(args, '--dry')
+
+    const commandToRun = `${pm.install} ${args.join(' ')}`
+    if (dry) {
+      console.log(commandToRun)
+      return commandToRun
+    }
+    // We use package manager install
+    nExecTerminal(pm.install, { stdio: 'inherit' })
+
+    console.log('MESSAGE AFTER INSTALLATION:\n', pm.messageAfterInstallation)
+
+    return true
+  }
+
   const compiler = languageSelected.getCompiler()
   let builder
   if (args.includes('--builder')) {
@@ -23,8 +68,6 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
   const command = `${compiler && compiler.install ? compiler.command : builder.command} ${args.join(
     ' '
   )}`
-
-  const { ensureInstalled } = require('@nexssp/ensure')
 
   let p = ensureInstalled(command, installCommand, {
     verbose: true,

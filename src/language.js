@@ -204,11 +204,13 @@ please use environment variable NEXSS_LANGUAGE_ENABLE_PROJECT_FOLDER.`)
   const installDeps = () => {
     const { ensureInstalled } = require('@nexssp/ensure')
     const config = require(`./lib/config/config.${process.platform}`)
+    // Install package manager (Windows/Scoop)
     const osPM = config.osPackageManagers[Object.keys(config.osPackageManagers)[0]]
     ensureInstalled(osPM.keyOfItem, osPM.installation, {
       progress: _progress,
     })
-    ensureInstalled('git', `${osPM.install ? osPM.install : osPM.installCommand} git`, {
+
+    ensureInstalled('git', null, {
       progress: _progress,
     })
   }
@@ -380,7 +382,52 @@ please use environment variable NEXSS_LANGUAGE_ENABLE_PROJECT_FOLDER.`)
     return byExtension(ext, recreateCache)
   }
 
+  // Language extension (with . like .php)
+  const install = (languageExtension, args, { progress, dry } = {}) => {
+    const languageSelected = byExtension(languageExtension)
+    const _log = require('@nexssp/logdebug')
+    const { blue, bold } = require('@nexssp/ansi')
+    const compiler = languageSelected.getCompiler()
+    let builder
+    if (args.includes('--builder')) {
+      builder = languageSelected.getBuilder()
+    }
+
+    const installCommand = `${
+      compiler && compiler.install ? compiler.install : builder.install
+    } ${args.join(' ')}`
+
+    const command = `${
+      compiler && compiler.install ? compiler.command : builder.command
+    } ${args.join(' ')}`
+
+    const { ensureInstalled } = require('@nexssp/ensure')
+
+    if (dry) {
+      return installCommand
+    }
+
+    let p = ensureInstalled(command, installCommand, {
+      verbose: true,
+      progress,
+    })
+
+    return p
+
+    //     if (p) {
+    //       _log.info(`${blue(bold(languageSelected.title))} is installed at:\n${p}`)
+    //       process.exitCode = 0
+    //       return true
+    //     } else {
+    //       _log.error(`There was an error during installation and file cannot be found.`)
+    //       _log.error(`command not found: ${command}
+    // installation by: ${installCommand}`)
+    //       process.exitCode = 1
+    //     }
+  }
+
   return {
+    install,
     getPath,
     getLanguages,
     byFilename,
