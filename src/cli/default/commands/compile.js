@@ -1,22 +1,26 @@
-module.exports = async (cmd, args, languageExtension, languageSelected) => {
+module.exports = (fileName, args, languageExtension, languageSelected) => {
   const { nSpawn } = require('@nexssp/system')
   const _log = require('@nexssp/logdebug')
+  const _path = require('path')
 
-  const { spawn } = require('child_process')
-  const compiler = languageSelected.getCompiler()
+  const exeFile = _path.resolve(`_nexss/${_path.basename(fileName)}.exe`)
 
-  const compilerCommand = compiler.command
-  const compilerArgs = compiler.args.replace('<file>', cmd) + ' ' + args.join(' ')
+  const compilerOrBuilder = languageSelected.getCompilerOrBuilder()
 
-  console.log({ compilerCommand })
-  console.log({ compilerArgs })
-  process.exit(1)
+  const compilerOrBuilderCommand = compilerOrBuilder.command
+  const compilerOrBuilderArgs = compilerOrBuilder.args
+    .replace(/<file>/g, _path.resolve(fileName))
+    // .replace(/<destinationPath>/g, dirname(exeFile))
+    .replace(/<destinationFile>/g, exeFile)
+    .replace(/<destinationDirectory>/g, _path.dirname(exeFile))
+    .split(' ')
 
-  _log.dc(`@language @compile command: ${compilerCommand} ${compilerArgs}`)
+  const commandToRun = `${compilerOrBuilderCommand} ${compilerOrBuilderArgs.join(' ')}`
+  _log.dc(`@language @compile command: ${commandToRun}`)
+  nSpawn(commandToRun, { stdio: 'inherit' })
 
-  const sleep = require('util').promisify(setTimeout)
-  await sleep(3000)
+  // const sleep = require('util').promisify(setTimeout)
+  // await sleep(3000)
 
-  console.log('Compile!!!!', cmd, args)
   return true
 }
