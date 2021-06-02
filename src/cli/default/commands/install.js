@@ -24,10 +24,13 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
 
   if (!isEmpty(args)) {
     const pm = languageSelected.getPackageManager()
+    const compilerCommand = languageSelected.getCompiler().command
     const existCommand = pm.install || pm.version || pm.installed
-    const pmCommand = existCommand.split(' ')[0]
+    const pmCommand = existCommand.replace('<currentCommand>', compilerCommand)
 
-    if (!pm.install) {
+    const packageManagerInstall = pm.install.replace('<currentCommand>', compilerCommand)
+
+    if (!packageManagerInstall) {
       _log.warn(`command 'install' is not defined for ${pmCommand}`)
       console.log(`Available commands: ${Object.keys(pm)}`)
       return
@@ -41,15 +44,16 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
       })
     }
 
-    const commandToRun = `${pm.install} ${args.join(' ')}`
+    const commandToRun = `${packageManagerInstall} ${args.join(' ')}`
     if (dry) {
       console.log(commandToRun)
       return commandToRun
     }
     // We use package manager install
-    nExecTerminal(pm.install, { stdio: 'inherit' })
 
-    console.log('MESSAGE AFTER INSTALLATION:\n', pm.messageAfterInstallation)
+    nExecTerminal(packageManagerInstall, { stdio: 'inherit' })
+    if (pm.messageAfterInstallation)
+      console.log('MESSAGE AFTER INSTALLATION:\n', pm.messageAfterInstallation)
 
     return true
   }
