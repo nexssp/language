@@ -51,7 +51,7 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
     }
     // We use package manager install
 
-    nExecTerminal(packageManagerInstall, { stdio: 'inherit' })
+    nExecTerminal(commandToRun, { stdio: 'inherit' })
     if (pm.messageAfterInstallation)
       console.log('MESSAGE AFTER INSTALLATION:\n', pm.messageAfterInstallation)
 
