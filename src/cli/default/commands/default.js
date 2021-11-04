@@ -59,9 +59,6 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
 
     const compilerOrBuilder = languageSelected.getCompilerOrBuilder().command
 
-    console.log(languageSelected.getCompiler())
-    process.exit(1)
-
     if (existCommand) {
       if (existCommand.indexOf('<currentCommand>') !== -1) {
         existCommand = existCommand.replace('<currentCommand>', compilerOrBuilder)
