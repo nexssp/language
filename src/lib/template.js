@@ -1,6 +1,7 @@
 const nexssLanguages = require('../../nexss-language/lib/language')
 const { getFiles } = require('../../lib/fs')
 const { join, extname, dirname } = require('path')
+const { NEXSS_HOME_PATH } = require('../cli/config/paths')
 
 module.exports.templateNames = (arg) => {
   if (arg) {
@@ -45,7 +46,7 @@ module.exports.getTemplatesPaths = (ext) => {
   // console.log(lang);
   // console.log(module.exports.getLanguages());
 
-  const globalConfigPath = require('os').homedir() + '/.nexss/config.json'
+  const globalConfigPath = NEXSS_HOME_PATH + '/config.json'
   // const tempFilePath = require("os").homedir() + "/.nexss/xxxxx.json";
   // const l = data => fs.appendFileSync(tempFilePath, data + "\n");
 
@@ -55,16 +56,11 @@ module.exports.getTemplatesPaths = (ext) => {
   if (fs.existsSync(globalConfigPath)) {
     // l("Config file exists");
     globalConfig = require(globalConfigPath)
-    const languageGlobalConfig =
-      globalConfig.languages && globalConfig.languages[extWithOutDot]
+    const languageGlobalConfig = globalConfig.languages && globalConfig.languages[extWithOutDot]
 
-    if (
-      languageGlobalConfig &&
-      lang.compilers[languageGlobalConfig.compilers]
-    ) {
+    if (languageGlobalConfig && lang.compilers[languageGlobalConfig.compilers]) {
       // l(`Global Compiler Selected: ${languageGlobalConfig.compilers}`);
-      templateFolder =
-        lang.compilers[languageGlobalConfig.compilers].templates || 'templates'
+      templateFolder = lang.compilers[languageGlobalConfig.compilers].templates || 'templates'
       // l(
       //  `compilers: ${JSON.stringify(
       //    lang.compilers[languageGlobalConfig.compilers]
@@ -89,9 +85,7 @@ module.exports.getTemplatesPaths = (ext) => {
     log.error(
       `Folder ${langFileTemplates} with templates does not exist. Probably has been manually deleted.`
     )
-    log.error(
-      'Please run with --nocache to recreate cache and try again. eg: \'nexss Id --nocache\''
-    )
+    log.error("Please run with --nocache to recreate cache and try again. eg: 'nexss Id --nocache'")
     process.exit()
   }
   return langFileTemplates

@@ -14,6 +14,8 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
   //   _log.dc(`@language @cli/default no arguments passed for :`, { languageExtension })
 
   // }
+  const { perLanguage } = require('../../../lib/perLanguage')
+  perLanguage(languageExtension, cmd, args, languageSelected)
 
   const _log = require('@nexssp/logdebug')
   _log.dc(`@language @cli/default @default:`, { cmd, args })
@@ -56,6 +58,10 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
     let existCommand = (!is('function', pm.install) && pm.install) || pm.version || pm.installed
 
     const compilerOrBuilder = languageSelected.getCompilerOrBuilder().command
+
+    console.log(languageSelected.getCompiler())
+    process.exit(1)
+
     if (existCommand) {
       if (existCommand.indexOf('<currentCommand>') !== -1) {
         existCommand = existCommand.replace('<currentCommand>', compilerOrBuilder)

@@ -1,4 +1,9 @@
 module.exports = (cmd, args, languageExtension, languageSelected) => {
+  const cliArgs = require('minimist')(args)
+  const fs = require('fs')
+  const log = require('@nexssp/logdebug')
+  const { bold } = require('@nexssp/ansi')
+
   const spawnOptions = require('../../../lib/config/spawnOptions')
   const compiler = languageSelected.getCompiler()
   const builder = languageSelected.getBuilder()
@@ -43,7 +48,7 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
   }
 
   if (Object.prototype.toString.call(runCommand) === `[object Function]`) {
-    log.dg(`Running FUNCTION ${argument}(${cliArgs._.join(',')})`)
+    log.dg(`Running FUNCTION ${argument}(${args.join(',')})`)
     runCommand(...cliArgs._)
   } else {
     const pmArguments = process.argv.filter((e) => e !== '--debug').slice(4)

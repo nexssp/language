@@ -1,3 +1,12 @@
+
+const { remove } = require('@nexssp/extend/array');
+const log = require("@nexssp/logdebug")
+const { bold } = require("@nexssp/ansi")
+const { NEXSS_HOME_PATH } = require('../cli/config/paths')
+const child_process = require("child_process")
+
+// File to review later.. no dry, cleanups etc.
+
 function exec(command) {
   try {
     require("child_process").execSync(command, {
@@ -12,62 +21,63 @@ function exec(command) {
   }
 }
 
-const perLanguage = (extension) => {
-  const { getLangByFilename } = require("./language");
+const perLanguage = (extension, cmd, args, languageSelected) => {
+  const cliArgs = require('minimist')(args)
+  
   const { nSpawn } = require("@nexssp/system");
+
+  const cliArgs_f = args.includes('--dry')
+  const cliArgs_ff = args.includes('--dry')
+  args = remove(args, '--progress')
+  args = remove(args, '--debug')
+  args = remove(args, '--dry')
+
 
   // We check if this can be language specified action like
   // --> eg. nexss js install socketio
-  const languageSelected = getLangByFilename(`example.${extension}`);
+  // const languageSelected = languages.byFilename(`example.${extension}`)
   // To use lang specific commands use
   // `nexss js install OR nexss php install` NOT!-> nexss .js install
 
   // First special quick functions per lanugage e,h, and d
   // So empty, helloWorld and default templates.
   if (extension.split(".").length === 1 && languageSelected) {
-    const params = cliArgs.f || cliArgs.ff ? ` -f` : "";
+    const params = cliArgs_f || cliArgs_ff ? ` -f` : "";
     let commandToRun;
-    switch (cliArgs._[1]) {
-      case "e":
-        commandToRun = `nexss file add empty.${cliArgs._[0]} --empty${params}`;
-        break;
-      case "h":
-        // Java has HelloWorld as it is required to work as className.
-        if (cliArgs._[0] !== "java") {
-          commandToRun = `nexss file add helloWorld.${cliArgs._[0]} --helloWorld${params}`;
-        } else {
-          commandToRun = `nexss file add HelloWorld.${cliArgs._[0]} --HelloWorld${params}`;
-        }
-        break;
-      case "d":
-        if (cliArgs._[0] !== "java") {
-          commandToRun = `nexss file add default.${cliArgs._[0]} --default${params}`;
-        } else {
-          commandToRun = `nexss file add Default.${cliArgs._[0]} --Default${params}`;
-        }
-        break;
-    }
+    // switch (cliArgs._[1]) {
+    //   case "e":
+    //     commandToRun = `nexss file add empty.${cliArgs._[0]} --empty${params}`;
+    //     break;
+    //   case "h":
+    //     // Java has HelloWorld as it is required to work as className.
+    //     if (cliArgs._[0] !== "java") {
+    //       commandToRun = `nexss file add helloWorld.${cliArgs._[0]} --helloWorld${params}`;
+    //     } else {
+    //       commandToRun = `nexss file add HelloWorld.${cliArgs._[0]} --HelloWorld${params}`;
+    //     }
+    //     break;
+    //   case "d":
+    //     if (cliArgs._[0] !== "java") {
+    //       commandToRun = `nexss file add default.${cliArgs._[0]} --default${params}`;
+    //     } else {
+    //       commandToRun = `nexss file add Default.${cliArgs._[0]} --Default${params}`;
+    //     }
+    //     break;
+    // }
 
-    if (commandToRun) {
-      nSpawn(commandToRun, {
-        stdio: "inherit",
-      });
-      return;
-    }
+    // if (commandToRun) {
+    //   nSpawn(commandToRun, {
+    //     stdio: "inherit",
+    //   });
+    //   return;
+    // }
 
-    const { getCompiler } = require("./compiler");
-    const compiler = getCompiler({
-      path: "",
-      name: `test${languageSelected.extensions[0]}`,
-    });
+    const compiler = languageSelected.getCompiler();
 
     let builder;
     if (!compiler) {
-      const { getBuilder } = require("./builder");
-      builder = getBuilder({
-        path: "",
-        name: `test${languageSelected.extensions[0]}`,
-      });
+     
+      builder = languageSelected.getBuilder();
     }
 
     let pmArguments = process.argv.slice(4);
@@ -82,69 +92,73 @@ const perLanguage = (extension) => {
     pmArguments = pmArguments.filter((e) => !argsNoAffect.includes(e));
 
     // INSTALL / UNINSTALL
-    if (
-      (cliArgs._[1] === "install" || cliArgs._[1] === "uninstall") &&
-      (!cliArgs._[2] || argsNoAffect.includes(cliArgs._[2]))
-    ) {
-      if (cliArgs._[2] === "--" || cliArgs._[2] === "--nocache") {
-        delete cliArgs._[2];
-      }
+    // if (
+    //   (cliArgs._[1] === "install" || cliArgs._[1] === "uninstall") &&
+    //   (!cliArgs._[2] || argsNoAffect.includes(cliArgs._[2]))
+    // ) {
+    //   if (cliArgs._[2] === "--" || cliArgs._[2] === "--nocache") {
+    //     delete cliArgs._[2];
+    //   }
 
-      if (cliArgs._[1] === "install") {
-        const installCommand = `${
-          compiler && compiler.install ? compiler.install : builder.install
-        } ${pmArguments.join(" ")}`;
+    //   if (cliArgs._[1] === "install") {
+    //     const installCommand = `${
+    //       compiler && compiler.install ? compiler.install : builder.install
+    //     } ${pmArguments.join(" ")}`;
 
-        const command = `${
-          compiler && compiler.install ? compiler.command : builder.command
-        } ${pmArguments.join(" ")}`;
+    //     const command = `${
+    //       compiler && compiler.install ? compiler.command : builder.command
+    //     } ${pmArguments.join(" ")}`;
 
-        const { ensureInstalled } = require("@nexssp/ensure");
+    //     const { ensureInstalled } = require("@nexssp/ensure");
 
-        let p = ensureInstalled(command, installCommand, {
-          verbose: true,
-          progress: cliArgs.progress,
-        });
-        if (p) {
-          log.info(
-            `${blue(bold(languageSelected.title))} is installed at:\n${p}`
-          );
-        }
-      } else {
-        //uninstall
-        // TODO: Implement uninstalling..
-        console.log(`Uninstalling is here`);
-      }
+    //     let p = ensureInstalled(command, installCommand, {
+    //       verbose: true,
+    //       progress: cliArgs.progress,
+    //     });
+    //     if (p) {
+    //       log.info(
+    //         `${blue(bold(languageSelected.title))} is installed at:\n${p}`
+    //       );
+    //     }
+    //   } else {
+    //     //uninstall
+    //     // TODO: Implement uninstalling..
+    //     console.log(`Uninstalling is here`);
+    //   }
 
-      // try {
-      //   child_process.execSync(command, {
-      //     stdio: "inherit",
-      //     detached: false,
-      //     shell: process.shell,
-      //     cwd: process.cwd(),
-      //   });
-      // } catch (error) {
-      //   console.log(`Command failed ${command}`);
-      // }
-      return;
-    }
+    //   // try {
+    //   //   child_process.execSync(command, {
+    //   //     stdio: "inherit",
+    //   //     detached: false,
+    //   //     shell: process.shell,
+    //   //     cwd: process.cwd(),
+    //   //   });
+    //   // } catch (error) {
+    //   //   console.log(`Command failed ${command}`);
+    //   // }
+    //   return;
+    // }
 
-    // Package managers
+    
+    // // Package managers
     const pm = languageSelected.languagePackageManagers
       ? languageSelected.languagePackageManagers[
           Object.keys(languageSelected.languagePackageManagers)[0]
         ]
       : null;
-
-    cliArgs._.shift();
-    const argument = cliArgs._.shift();
+    
+    
+    
+  
+    const argument = cmd;
     // console.log(argument);
 
     // custom actions like display compilers etc
     // eg nexss js compilers, nexss js builders
 
     // SET default compilers, builders for each language
-    switch (argument) {
+
+    switch (cmd) {
       case "default":
         // Set default compilator eg nexss lua default compiler
         let whatToSet = cliArgs._.shift();
@@ -177,7 +191,9 @@ const perLanguage = (extension) => {
 
         // TODO: Later move the function to config (see config path is also used below)
         let config;
-        const configPath = process.env.NEXSS_HOME_PATH + "/config.json";
+        const configPath = NEXSS_HOME_PATH + "/config.json";
+
+        const fs = require("fs")
         if (fs.existsSync(configPath)) {
           config = require(configPath);
         } else {
@@ -273,7 +289,7 @@ const perLanguage = (extension) => {
           //Reseting to the version
           if (process.platform === "win32") {
             // Versions bucket only for Windows / Scoop
-            const { ensureBucketAdded } = require("./lib/scoop");
+            const { ensureBucketAdded } = require("../lib/scoop");
             ensureBucketAdded("versions");
           }
 
@@ -363,7 +379,7 @@ const perLanguage = (extension) => {
 
         // Below runs like:
         // Per compiler run command if not exists main run command else display error that is not specified.
-        const configPath2 = process.env.NEXSS_HOME_PATH + "/config.json";
+        const configPath2 = NEXSS_HOME_PATH + "/config.json";
         let config2;
         if (fs.existsSync(configPath2)) {
           config2 = require(configPath2);
@@ -487,11 +503,8 @@ const perLanguage = (extension) => {
           );
         }
 
-        const { getCompiler } = require("./compiler");
-        let compiler = getCompiler({
-          path: "",
-          name: `test${languageSelected.extensions[0]}`,
-        });
+        
+        let compiler = languageSelected.getCompiler();
         const { ensureInstalled } = require("@nexssp/ensure");
         if (!compiler) {
           compiler = builder;

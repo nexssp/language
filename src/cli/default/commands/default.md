@@ -1,3 +1,3 @@
-# Install
+# Default
 
 Set defaults

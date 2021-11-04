@@ -1,5 +1,7 @@
 const { getLangByFilename } = require('./language')
 
+// To implement below the @nexss-compiler read the top of the file
+
 module.exports.getCompiler = (file) => {
   const fileName = file.name
   const fileFillPAth = path.join(file.path, file.name)
@@ -7,13 +9,7 @@ module.exports.getCompiler = (file) => {
   const languageDefinition = getLangByFilename(fileName)
   if (!languageDefinition) {
     // THere can be also configuration isssues
-    log.error(
-      bold(
-        yellow(
-          'If you see any errors before this statement, please fix them first.'
-        )
-      )
-    )
+    log.error(bold(yellow('If you see any errors before this statement, please fix them first.')))
     // TODO: ?? Execute shell commands? return false and pass shell commands?
     // We check if we can run this.
     // maybe later here to execute just shell comands......
@@ -26,9 +22,7 @@ module.exports.getCompiler = (file) => {
     //   console.log(e);
     // }
     log.error('There might be an issue', file)
-    log.error(
-      'Maybe there is a program with the same name as command of Nexss Programmer?'
-    )
+    log.error('Maybe there is a program with the same name as command of Nexss Programmer?')
     if (cliArgs) {
       log.error(
         'Eg. You execute `nexss ' +
@@ -64,10 +58,7 @@ module.exports.getCompiler = (file) => {
     }
   }
 
-  if (
-    file.compiler &&
-    !ld_compiler[file && file.compiler && file.compiler.split(' ')[0]]
-  ) {
+  if (file.compiler && !ld_compiler[file && file.compiler && file.compiler.split(' ')[0]]) {
     log.warn(
       `Compiler has been set to ${file.compiler} from file but not exists. Using default one.`
     )
@@ -89,8 +80,7 @@ module.exports.getCompiler = (file) => {
       globalConfig.languages &&
       globalConfig.languages[path.extname(fileName).slice(1)]
     ) {
-      globalLangConfig =
-        globalConfig.languages[path.extname(fileName).slice(1)]
+      globalLangConfig = globalConfig.languages[path.extname(fileName).slice(1)]
 
       if (ld_compiler[globalLangConfig.compilers]) {
         compiler = languageDefinition.compilers[globalLangConfig.compilers]
@@ -103,10 +93,7 @@ module.exports.getCompiler = (file) => {
       }
     }
     if (process.nexssGlobalConfig) {
-      if (
-        process.nexssGlobalConfig.languages &&
-        process.nexssGlobalConfig.languages[extension]
-      ) {
+      if (process.nexssGlobalConfig.languages && process.nexssGlobalConfig.languages[extension]) {
         globalLangConfig = process.nexssGlobalConfig.languages[extension]
 
         if (ld_compiler[globalLangConfig.compilers]) {
@@ -123,16 +110,11 @@ module.exports.getCompiler = (file) => {
   }
   // CUSTOM COMPILER in the _nexss.yml file
 
-  if (
-    cliArgs.nxsCompiler &&
-    (compiler = ld_compiler[cliArgs.nxsCompiler.split(' ')[0]])
-  ) {
+  if (cliArgs.nxsCompiler && (compiler = ld_compiler[cliArgs.nxsCompiler.split(' ')[0]])) {
     // console.log(compiler);
     if (cliArgs.verbose) {
       log.info(
-        `Compiler has been set to ${
-          cliArgs.nxsCompiler.split(' ')[0]
-        } from command line arguments.`
+        `Compiler has been set to ${cliArgs.nxsCompiler.split(' ')[0]} from command line arguments.`
       )
     }
   } else {
@@ -148,10 +130,7 @@ module.exports.getCompiler = (file) => {
     } else {
       if (!compiler) {
         if (languageDefinition) {
-          compiler =
-            languageDefinition.compilers[
-              Object.keys(languageDefinition.compilers)[0]
-            ]
+          compiler = languageDefinition.compilers[Object.keys(languageDefinition.compilers)[0]]
         } else {
           compiler = {}
           compiler.command = 'nexss'

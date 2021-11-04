@@ -37,7 +37,7 @@ function nexssLanguages({ cache, cacheDuration, progress } = {}) {
   let _paths = []
   let _fs
   let _path
-  let _log
+  let _log = require('@nexssp/logdebug')
   const _cache = cache
   const _progress = progress
   let _started
@@ -55,7 +55,7 @@ function nexssLanguages({ cache, cacheDuration, progress } = {}) {
     }
     _fs = require('fs')
     _path = require('path')
-    _log = require('@nexssp/logdebug')
+
     // == We start a cache
     if (_cache) {
       _cache.start()
