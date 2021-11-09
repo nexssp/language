@@ -157,7 +157,7 @@ const perLanguage = (extension, cmd, args, languageSelected) => {
     // eg nexss js compilers, nexss js builders
 
     // SET default compilers, builders for each language
-
+    
     switch (cmd) {
       case "default":
         // Set default compilator eg nexss lua default compiler
@@ -482,8 +482,11 @@ const perLanguage = (extension, cmd, args, languageSelected) => {
         }
         return;
       default:
-        break;
+        return
+        
     }
+
+    // To check the code below.
 
     log.di(`Language selected: ${bold(languageSelected.title)}`);
 

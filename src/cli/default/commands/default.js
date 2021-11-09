@@ -15,17 +15,19 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
 
   // }
   const { perLanguage } = require('../../../lib/perLanguage')
-  perLanguage(languageExtension, cmd, args, languageSelected)
+  const argsCopy = [...args]
+
+  perLanguage(languageExtension, cmd, argsCopy, languageSelected)
 
   const _log = require('@nexssp/logdebug')
   _log.dc(`@language @cli/default @default:`, { cmd, args })
   const { nSpawn } = require('@nexssp/system')
   const params = process.argv.includes('--force') || process.argv.includes('-f') ? ` -f` : ''
-  const dry = process.argv.includes('--dry')
+  const dry = args.includes('--dry')
 
   const { remove } = require('@nexssp/extend/array')
   args = remove(args, '-f')
-  args = remove(args, '--force')
+  // args = remove(args, '--force')
   args = remove(args, '--progress')
   args = remove(args, '--debug')
   args = remove(args, '--dry')
@@ -52,12 +54,11 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
       }
       break
   }
+  const compilerOrBuilder = languageSelected.getCompilerOrBuilder().command
 
   if (!commandToRun) {
     const pm = languageSelected.getPackageManager()
     let existCommand = (!is('function', pm.install) && pm.install) || pm.version || pm.installed
-
-    const compilerOrBuilder = languageSelected.getCompilerOrBuilder().command
 
     if (existCommand) {
       if (existCommand.indexOf('<currentCommand>') !== -1) {
@@ -87,6 +88,10 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
     if (!commandToRun) {
       commandToRun = compilerOrBuilder
     }
+  }
+
+  if (commandToRun.indexOf('<currentCommand>') !== -1) {
+    commandToRun = commandToRun.replace('<currentCommand>', compilerOrBuilder)
   }
 
   if (dry) {
