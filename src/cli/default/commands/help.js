@@ -1,8 +1,10 @@
 module.exports = (cmd, args, extension, languageConfig) => {
-  const { bold, yellow } = require('@nexssp/ansi')
+  const { bold, yellow, green } = require('@nexssp/ansi')
   console.log()
-  console.log(yellow(bold(languageConfig.title)))
-  console.log(languageConfig.description)
+  console.log(yellow('Name: ' + bold(languageConfig.title)))
+  console.log(green('Founders: ' + bold(languageConfig.founders.join(', '))))
+  console.log(green('Years: ' + bold(languageConfig.years.join(', '))))
+  console.log(yellow('Name: ' + languageConfig.description))
   console.log('='.repeat(60))
   const currentCommand = languageConfig.getCompilerOrBuilder(null, true)
   console.log(`Current command: ${bold(currentCommand.command)}`)
