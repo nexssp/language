@@ -23,39 +23,44 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
   args = remove(args, '--dry')
 
   if (!isEmpty(args)) {
+    // try {
     const pm = languageSelected.getPackageManager()
     const compilerCommand = languageSelected.getCompiler().command
     const existCommand = pm.install || pm.version || pm.installed
-    const pmCommand = existCommand.replace('<currentCommand>', compilerCommand)
+    if (existCommand) {
+      const pmCommand = existCommand.replace('<currentCommand>', compilerCommand)
 
-    const packageManagerInstall = pm.install.replace('<currentCommand>', compilerCommand)
+      const packageManagerInstall = pm.install.replace('<currentCommand>', compilerCommand)
 
-    if (!packageManagerInstall) {
-      _log.warn(`command 'install' is not defined for ${pmCommand}`)
-      console.log(`Available commands: ${Object.keys(pm)}`)
-      return
+      if (!packageManagerInstall) {
+        _log.warn(`command 'install' is not defined for ${pmCommand}`)
+        console.log(`Available commands: ${Object.keys(pm)}`)
+        return
+      }
+
+      // get command from install or version. One of them m
+
+      if (pm.installation.indexOf('installed') === -1) {
+        ensureInstalled(pmCommand, pm.installation, {
+          progress: true /**args.includes('--progress') */,
+        })
+      }
+      const commandToRun = `${packageManagerInstall} ${args.join(' ')}`
+      if (dry) {
+        console.log(commandToRun)
+        return commandToRun
+      }
+      // We use package manager install
+
+      nExecTerminal(commandToRun, { stdio: 'inherit' })
+      if (pm.messageAfterInstallation)
+        console.log('MESSAGE AFTER INSTALLATION:\n', pm.messageAfterInstallation)
+
+      return true
     }
-
-    // get command from install or version. One of them m
-
-    if (pm.installation.indexOf('installed') === -1) {
-      ensureInstalled(pmCommand, pm.installation, {
-        progress: true /**args.includes('--progress') */,
-      })
-    }
-
-    const commandToRun = `${packageManagerInstall} ${args.join(' ')}`
-    if (dry) {
-      console.log(commandToRun)
-      return commandToRun
-    }
-    // We use package manager install
-
-    nExecTerminal(commandToRun, { stdio: 'inherit' })
-    if (pm.messageAfterInstallation)
-      console.log('MESSAGE AFTER INSTALLATION:\n', pm.messageAfterInstallation)
-
-    return true
+    // } catch (error) {
+    //   _log.dc(`Error with (${languageExtension}):`)
+    // }
   }
 
   const compiler = languageSelected.getCompiler()
