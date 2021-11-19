@@ -70,6 +70,7 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
 
       if (is('function', action)) {
         commandToRun = action(args)
+        return
       } else if (action) {
         commandToRun = `${action} ${args.join(' ')}`
       }
