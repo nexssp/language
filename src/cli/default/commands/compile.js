@@ -2,6 +2,7 @@ module.exports = (fileName, args, languageExtension, languageSelected) => {
   const { nSpawn } = require('@nexssp/system')
   const _log = require('@nexssp/logdebug')
   const _path = require('path')
+  const _fs = require('fs')
 
   const exeFile = _path.resolve(`_nexss/${_path.basename(fileName)}.exe`)
 
@@ -32,11 +33,13 @@ module.exports = (fileName, args, languageExtension, languageSelected) => {
   }
 
   const commandToRun = `${compilerOrBuilder.command} ${compilerOrBuilder.args.join(' ')}`
-  _log.dc(`@language @compile command: ${commandToRun}`)
-  nSpawn(commandToRun, { stdio: 'inherit' })
-
-  // const sleep = require('util').promisify(setTimeout)
-  // await sleep(3000)
+  if (compilerOrBuilder.command === 'nexss' && !_fs.existsSync(compilerOrBuilder.args[0])) {
+    console.error(`File not found: ${bold(compilerOrBuilder.args[0])}`)
+    // console.error(`Command failed: ${bold(commandToRun)}`)
+  } else {
+    _log.dc(`@language @compile command: ${commandToRun}`)
+    nSpawn(commandToRun, { stdio: 'inherit' })
+  }
 
   return true
 }
