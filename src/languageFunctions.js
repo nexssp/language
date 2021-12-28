@@ -1,5 +1,6 @@
 // This could be done by Proxies also.
 const { getFiles } = require('./lib/fs')
+const { NEXSS_HOME_PATH } = require('./cli/config/paths')
 function carryGet(par) {
   return function (name, continueOnError) {
     const allKeys = Object.keys(this[par])
@@ -15,7 +16,30 @@ function carryGet(par) {
           allKeys.join(', ')
       )
     }
-    if (!name) name = allKeys[0]
+
+    if (!name) {
+      const configPath = NEXSS_HOME_PATH + '/config.json'
+      let config
+
+      name = allKeys[0]
+      // We check if the compiler, builder or any other exists in the config (NEXSS_HOME_PATH + '/config.json')
+      // The compiler can be set by nexss py default compiler 'name' and it is setup in the above path.
+      if (fs.existsSync(configPath)) {
+        config = require(configPath)
+        if (config.languages) {
+          const extension = this.extensions[0].slice(1)
+          const selectedLang = config.languages[extension]
+          const selectedPar = selectedLang && selectedLang[par]
+          if (selectedPar) {
+            // TODO: Check if selected exists..
+            name = selectedPar
+          }
+        }
+        // par
+      } else {
+        config = { languages: {} }
+      }
+    }
 
     if (!continueOnError && !name) {
       return new Error(`${par} seems to be empty for ${this.title}.`)
@@ -33,7 +57,7 @@ function addFunctions(obj) {
   obj.getBuilder = carryGet('builders')
   obj.getPackageManager = carryGet('languagePackageManagers')
   obj.getCompilerOrBuilder = function (name) {
-    // secont parameter true because we try to find builder as alternative
+    // second parameter true because we try to find builder as alternative
     return this.getCompiler(name, true) || this.getBuilder(name)
   }
 
