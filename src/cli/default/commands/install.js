@@ -6,8 +6,6 @@
  * @param {object} languageSelected - loaded language definition
  */
 
-const { inherits } = require('util')
-
 module.exports = (cmd, args, languageExtension, languageSelected) => {
   const _params = require('minimist')(process.argv.slice(2))
   const { ensureInstalled } = require('@nexssp/ensure')
@@ -26,10 +24,10 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
     // try {
     const pm = languageSelected.getPackageManager()
     const compilerCommand = languageSelected.getCompiler().command
+
     const existCommand = pm.install || pm.version || pm.installed
     if (existCommand) {
       const pmCommand = existCommand.replace('<currentCommand>', compilerCommand)
-
       const packageManagerInstall = pm.install.replace('<currentCommand>', compilerCommand)
 
       if (!packageManagerInstall) {
@@ -41,7 +39,8 @@ module.exports = (cmd, args, languageExtension, languageSelected) => {
       // get command from install or version. One of them m
 
       if (pm.installation.indexOf('installed') === -1) {
-        ensureInstalled(pmCommand, pm.installation, {
+        // pmCommand can have parameters so we take the very first element as command.
+        ensureInstalled(pmCommand.split(' ')[0], pm.installation, {
           progress: true /**args.includes('--progress') */,
         })
       }
