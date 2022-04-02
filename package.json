@@ -13,8 +13,8 @@
     "aliases.json"
   ],
   "scripts": {
-    "test": "nexssp-test --debug",
-    "test2": "node ./bin/nexssp-language.js installed",
+    "test2": "nexssp-test --debug",
+    "test": "node ./bin/nexssp-language.js installed",
     "prepare2": "npm run nexss:build",
     "nexss:build": "npx @nexssp/min@1.0.6",
     "nexss:clean": ""
