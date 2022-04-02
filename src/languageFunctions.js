@@ -1,6 +1,7 @@
 // This could be done by Proxies also.
 const { getFiles } = require('./lib/fs')
 const { NEXSS_HOME_PATH } = require('./cli/config/paths')
+const fs = require('fs')
 function carryGet(par) {
   return function (name, continueOnError) {
     const allKeys = Object.keys(this[par])
