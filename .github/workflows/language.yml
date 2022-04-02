@@ -2,7 +2,7 @@ name: nexssp-os CI
 
 on:
   push:
-    branches: [fixing-workflow]
+    branches: [setup-workflow]
 
 jobs:
   build:
