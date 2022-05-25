@@ -8,7 +8,10 @@ This Nexss Programmer's plugin is the effect of the refactoring the Nexss Progra
 
 ## Commands
 
-```sh
+```
+nexssp-language [ext] readme # new - displays README.md for the selected [ext] language
+nexssp-language [ext] help
+
 nexssp-language list
 nexssp-language [ext] install # install language from over 50 of them, see above list
 nexssp-language installed # installed languages
@@ -31,6 +34,8 @@ For development very handy is **node ./bin/nexssp-language.js**
 ```sh
 # display help
 node ./bin/nexssp-language.js
+node ./bin/nexssp-language.js php help # displays extra info about language like founder, year, path to config and much more..
+node ./bin/nexssp-language.js php readme # displays README.md for the language
 
 # run repl for the language example of NodeJS
 node ./bin/nexssp-language.js js
