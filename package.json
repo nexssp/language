@@ -1,7 +1,7 @@
 {
   "name": "@nexssp/language",
   "description": "All about programming languages - history, founders, how to install, package managers, logo..",
-  "version": "1.1.22",
+  "version": "1.1.23",
   "homepage": "https://nexss.com",
   "main": "src/language.js",
   "bin": {
