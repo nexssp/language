@@ -8,10 +8,10 @@ module.exports = (cmd, args, extension, languageConfig) => {
   console.log('='.repeat(60))
   const currentCommand = languageConfig.getCompilerOrBuilder(null, true)
   console.log(`Current command: ${bold(currentCommand.command)}`)
-
+  const configPath = require('path').dirname(languageConfig.configFile)
+  console.log(`Config path: ${bold(configPath)}`)
   // console.log('extension', a)
   // (null, true) - null - get default compiler, true - continue on error
-
   const compiler = languageConfig.getCompiler(null, true)
   if (compiler) {
     console.log()
@@ -39,6 +39,10 @@ module.exports = (cmd, args, extension, languageConfig) => {
     })
     console.log(pms)
   }
+
+  console.log(
+    `Please use ${bold('help')} and also ${bold('readme')} comamnds to display more info.`
+  )
 
   process.exit(1)
 }
